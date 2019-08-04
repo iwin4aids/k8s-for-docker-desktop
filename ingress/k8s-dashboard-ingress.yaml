@@ -1,15 +1,21 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: kubeapps-ingress
+  name: k8s-dashboard
   namespace: kube-system
   annotations:
-    ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/secure-backends: "true"
 spec:
+  tls:
+    - hosts:
+      - dashboard.local
+    - secretName: k8s-dashboard-secret
   rules:
-  - host: dashboard.local
-    http:
-      paths:
-      - backend:
-          serviceName: kubernetes-dashboard
-          servicePort: 443
+    - host: dashboard.local
+      http:
+        paths:
+          - backend:
+              serviceName: kubernetes-dashboard
+              servicePort: 443
