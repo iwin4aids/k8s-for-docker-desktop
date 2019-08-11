@@ -147,16 +147,24 @@ spec:
 ---
 # ------------------- Dashboard Service ------------------- #
 
-kind: Service
 apiVersion: v1
+kind: Service
 metadata:
-  labels:
-    k8s-app: kubernetes-dashboard
-  name: kubernetes-dashboard
+  name: dashboard-lb
   namespace: kube-system
 spec:
+  externalTrafficPolicy: Cluster
   ports:
-    - port: 443
-      targetPort: 8443
+  - name: http
+    nodePort: 30210
+    port: 8070
+    protocol: TCP
+    targetPort: 8443
   selector:
     k8s-app: kubernetes-dashboard
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer:
+    ingress:
+    - hostname: localhost
